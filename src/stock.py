@@ -1,7 +1,8 @@
 import pandas as pd
 import requests
-import matplotlib.pyplot as plt
-import plotly.graph_objects as go
+import mplfinance as mpf
+import numpy as np
+import datetime
 
 class Stock:
     
@@ -24,17 +25,34 @@ class Stock:
         self.volumes = data.iloc[4].values
         self.dates = data.axes[1]
 
+        reformatted_data = dict()
+        reformatted_data['Date'] = self.dates
+        reformatted_data['Open'] = [float(i) for i in self.opens]
+        reformatted_data['High'] = [float(i) for i in self.highs]
+        reformatted_data['Low'] = [float(i) for i in self.lows]
+        reformatted_data['Close'] = [float(i) for i in self.closes]
+        reformatted_data['Volume'] = [float(i) for i in self.volumes]
+
+        pdata = pd.DataFrame.from_dict(reformatted_data)
+        pdata.set_index('Date', inplace=True)
+        pdata.index = pd.to_datetime(pdata.index)
+
+        data = data.transpose()
+        data.columns = ['Open', 'High', 'Low', 'Close', 'Volume']
+        data.index.name = 'Date'
+        
+        mpf.plot(pdata)
+        
+        
+        #mpf.plot(data)
+        
+
     def visualizeCandles(self):
-        fig = go.Figure(data=[go.Candlestick(x=self.dates,
-                        open = self.opens,
-                        high = self.highs,
-                        low = self.lows,
-                        close = self.closes)])
-        fig.show()
+        return
 
 if __name__ == '__main__':
-    stonk = Stock("IBM")
+    stonk = Stock("CCL")
     stonk.updateStock("Daily")
     stonk.visualizeCandles()
 
-    print(stonk.opens[0])
+    #print(stonk.opens[0])
