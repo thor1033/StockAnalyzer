@@ -1,6 +1,6 @@
  # Stock Analyzer
 Visualizer:
-<img width=600px src="https://raw.githubusercontent.com/thor1033/VisualizeCandlesExample.png" />
+![alt text](VisualizeCandlesExample.PNG)
 
 TODO:
 * WRITE A CLASS FOR STOCK
