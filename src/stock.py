@@ -9,21 +9,22 @@ class Stock:
         self.ticker = ticker
 
 
-    def updateStockDaily(self):
-        api_call = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol="+ self.ticker + "&apikey=BXAVNFY9YVG3DJDW"
+    def updateStock(self, CandleTypes = "Daily"): # CandleTypes [Daily, 1min, 5min, 15min, 30min, 60min]
+        if(CandleTypes == "Daily"):
+            api_call = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol="+ self.ticker + "&apikey=BXAVNFY9YVG3DJDW"
+        else:
+            api_call = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + self.ticker + "&interval=" + CandleTypes + "&apikey=BXAVNFY9YVG3DJDW"
+
         respond = requests.get(api_call)
-        data = pd.DataFrame.from_dict(respond.json()['Time Series (Daily)'])
+        data = pd.DataFrame.from_dict(respond.json()['Time Series ('+CandleTypes+')'])
         self.opens = data.iloc[0].values
         self.highs = data.iloc[1].values
         self.lows = data.iloc[2].values
         self.closes = data.iloc[3].values
-        self.adjustedCloses = data.iloc[4].values
-        self.volumes = data.iloc[5].values
-        self.dividendAmount = data.iloc[6].values
-        self.splitCoefficients = data.iloc[7].values
+        self.volumes = data.iloc[4].values
         self.dates = data.axes[1]
 
-    def visualizeDailyCandles(self):
+    def visualizeCandles(self):
         fig = go.Figure(data=[go.Candlestick(x=self.dates,
                         open = self.opens,
                         high = self.highs,
@@ -33,8 +34,7 @@ class Stock:
 
 if __name__ == '__main__':
     stonk = Stock("IBM")
-    stonk.updateStockDaily()
+    stonk.updateStock("Daily")
+    stonk.visualizeCandles()
 
-    stonk.visualizeDailyCandles()
-
-    print(stonk.opens)
+    print(stonk.opens[0])

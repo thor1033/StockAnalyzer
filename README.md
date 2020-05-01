@@ -1,14 +1,11 @@
  # Stock Analyzer
-Visualizer:
+Visualiing the data(daily candles):
 ![alt text](VisualizeCandlesExample.PNG)
 
-TODO:
+**TODO:**
 * WRITE A CLASS FOR STOCK
-    * GET THE KEY DATA FOR A STOCK
-    * Update The stock function
-    * API FOR STOCK DATA
-    * Analyzing data over 100 days
     * Add volume to chart
+    * Change output size in API for smaller intervals
 * CONVERT THE DATA TO FORMATS WHICH CAN BE USED BY A NN
 * WRITE A NEURAL NETWORK FOR ANALYSING THE DATA
 
