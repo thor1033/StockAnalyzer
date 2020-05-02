@@ -10,11 +10,11 @@ class Stock:
         self.ticker = ticker
 
 
-    def updateStock(self, CandleTypes = "Daily"): # CandleTypes [Daily, 1min, 5min, 15min, 30min, 60min]
+    def updateStock(self, CandleTypes = "Daily", size = "compact"): # CandleTypes [Daily, 1min, 5min, 15min, 30min, 60min]
         if(CandleTypes == "Daily"):
-            api_call = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol="+ self.ticker + "&apikey=BXAVNFY9YVG3DJDW"
+            api_call = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol="+ self.ticker + "&outputsize=" + size + "&apikey=BXAVNFY9YVG3DJDW"
         else:
-            api_call = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + self.ticker + "&interval=" + CandleTypes + "&apikey=BXAVNFY9YVG3DJDW"
+            api_call = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + self.ticker + "&interval=" + CandleTypes + "&outputsize=" + size + "&apikey=BXAVNFY9YVG3DJDW"
 
         respond = requests.get(api_call)
         data = pd.DataFrame.from_dict(respond.json()['Time Series ('+CandleTypes+')'])
@@ -27,6 +27,8 @@ class Stock:
         
 
     def visualizeCandles(self):
+        #https://blog.csdn.net/wuwei_201/article/details/105783640
+        #https://blog.csdn.net/wuwei_201/article/details/105815728?utm_medium=distribute.pc_relevant_right.none-task-blog-BlogCommendFromBaidu-1&depth_1-utm_source=distribute.pc_relevant_right.none-task-blog-BlogCommendFromBaidu-1
         reformatted_data = dict()
         reformatted_data['Date'] = list(reversed(self.dates))
         reformatted_data['Open'] = list(reversed([float(i) for i in self.opens]))
@@ -45,8 +47,6 @@ class Stock:
         mpf.plot(pdata, type='candle', mav = (3,6,9), style=my_style, volume=True)
 
 if __name__ == '__main__':
-    stonk = Stock("IBM")
-    stonk.updateStock("5min")
+    stonk = Stock("MED")
+    stonk.updateStock("Daily", "full")
     stonk.visualizeCandles()
-
-    #print(stonk.opens[0])
