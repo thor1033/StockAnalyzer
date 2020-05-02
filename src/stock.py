@@ -47,6 +47,7 @@ class Stock:
         mpf.plot(pdata, type='candle', mav = (3,6,9), style=my_style, volume=True)
 
 if __name__ == '__main__':
+    #https://github.com/shirosaidev/stocksight for inspirations
     stonk = Stock("MED")
     stonk.updateStock("Daily", "full")
     stonk.visualizeCandles()
