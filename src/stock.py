@@ -24,35 +24,29 @@ class Stock:
         self.closes = data.iloc[3].values
         self.volumes = data.iloc[4].values
         self.dates = data.axes[1]
+        
 
+    def visualizeCandles(self):
         reformatted_data = dict()
-        reformatted_data['Date'] = self.dates
-        reformatted_data['Open'] = [float(i) for i in self.opens]
-        reformatted_data['High'] = [float(i) for i in self.highs]
-        reformatted_data['Low'] = [float(i) for i in self.lows]
-        reformatted_data['Close'] = [float(i) for i in self.closes]
-        reformatted_data['Volume'] = [float(i) for i in self.volumes]
+        reformatted_data['Date'] = list(reversed(self.dates))
+        reformatted_data['Open'] = list(reversed([float(i) for i in self.opens]))
+        reformatted_data['High'] = list(reversed([float(i) for i in self.highs]))
+        reformatted_data['Low'] = list(reversed([float(i) for i in self.lows]))
+        reformatted_data['Close'] = list(reversed([float(i) for i in self.closes]))
+        reformatted_data['Volume'] = list(reversed([float(i) for i in self.volumes]))
 
         pdata = pd.DataFrame.from_dict(reformatted_data)
         pdata.set_index('Date', inplace=True)
         pdata.index = pd.to_datetime(pdata.index)
+        
+        my_color = mpf.make_marketcolors(up='cyan', down='red', edge='black', wick='black', volume='blue')
+        my_style = mpf.make_mpf_style(marketcolors=my_color, gridaxis='both', gridstyle='-.', y_on_right=True)
 
-        data = data.transpose()
-        data.columns = ['Open', 'High', 'Low', 'Close', 'Volume']
-        data.index.name = 'Date'
-        
-        mpf.plot(pdata)
-        
-        
-        #mpf.plot(data)
-        
-
-    def visualizeCandles(self):
-        return
+        mpf.plot(pdata, type='candle', mav = (3,6,9), style=my_style, volume=True)
 
 if __name__ == '__main__':
-    stonk = Stock("CCL")
-    stonk.updateStock("Daily")
+    stonk = Stock("IBM")
+    stonk.updateStock("5min")
     stonk.visualizeCandles()
 
     #print(stonk.opens[0])
