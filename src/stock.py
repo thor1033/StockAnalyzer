@@ -4,6 +4,8 @@ import mplfinance as mpf
 import numpy as np
 import datetime
 import logging
+from datetime import date, timedelta
+
 
 class Stock:
     
@@ -20,6 +22,12 @@ class Stock:
         try:
             respond = requests.get(api_call)
             data = pd.DataFrame.from_dict(respond.json()['Time Series ('+CandleTypes+')'])
+
+            startDate = date(2000, 5, 1)
+            endDate = date(2000, 5, 12)
+            for singleDate in daterange(startDate, endDate):
+                data.drop(singleDate.strftime("%Y-%m-%d"), inplace=True, axis=1)
+
             self.opens = data.iloc[0].values
             self.highs = data.iloc[1].values
             self.lows = data.iloc[2].values
@@ -63,6 +71,7 @@ class Stock:
         reformatted_data['Low'] = list(reversed([float(i) for i in self.lows]))
         reformatted_data['Close'] = list(reversed([float(i) for i in self.closes]))
         reformatted_data['Volume'] = list(reversed([float(i) for i in self.volumes]))
+        reformatted_data['Tech'] = list(reversed([float(i) for i in self.techInd]))
 
         pdata = pd.DataFrame.from_dict(reformatted_data)
         pdata.set_index('Date', inplace=True)
@@ -71,12 +80,34 @@ class Stock:
         my_color = mpf.make_marketcolors(up='cyan', down='red', edge='black', wick='black', volume='blue')
         my_style = mpf.make_mpf_style(marketcolors=my_color, gridaxis='both', gridstyle='-.', y_on_right=True)
 
-        mpf.plot(pdata, type='candle', mav = (3,6,9), style=my_style, volume=True)
+        add_plot = mpf.make_addplot(reformatted_data['Tech'])
 
+        mpf.plot(pdata, addplot=add_plot, type='candle', style=my_style, volume=True)
+
+    def formatData(self):
+        return
+    def trainNetwork(self):
+        return
+    def predictPrice(self):
+        return
+
+    def sentimentAnalysis(self):
+        #Tweets are positive or negative
+        #Via http://text-processing.com/docs/s
+        #Maybe use elsaticsearch
+        return
+
+
+def daterange(startDate, endDate):
+    for n in range(int((endDate - startDate).days)):
+        if(startDate+timedelta(n) == date(2000,5,6) or startDate+timedelta(n) == date(2000,5,7)):
+            pass
+        else:
+            yield startDate+timedelta(n)
 
 if __name__ == '__main__':
     #https://github.com/shirosaidev/stocksight for inspirations
     stonk = Stock("MED")
-    #stonk.updateStock("Daily", "full")
-    stonk.getTechInd("EMA", "daily")
-    #stonk.visualizeCandles()
+    stonk.updateStock("Daily", "full")
+    stonk.getTechInd("EMA", "daily")  
+    stonk.visualizeCandles()
