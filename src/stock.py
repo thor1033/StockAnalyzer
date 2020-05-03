@@ -17,14 +17,18 @@ class Stock:
         else:
             api_call = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + self.ticker + "&interval=" + CandleTypes + "&outputsize=" + size + "&apikey=BXAVNFY9YVG3DJDW"
 
-        respond = requests.get(api_call)
-        data = pd.DataFrame.from_dict(respond.json()['Time Series ('+CandleTypes+')'])
-        self.opens = data.iloc[0].values
-        self.highs = data.iloc[1].values
-        self.lows = data.iloc[2].values
-        self.closes = data.iloc[3].values
-        self.volumes = data.iloc[4].values
-        self.dates = data.axes[1]
+        try:
+            respond = requests.get(api_call)
+            data = pd.DataFrame.from_dict(respond.json()['Time Series ('+CandleTypes+')'])
+            self.opens = data.iloc[0].values
+            self.highs = data.iloc[1].values
+            self.lows = data.iloc[2].values
+            self.closes = data.iloc[3].values
+            self.volumes = data.iloc[4].values
+            self.dates = data.axes[1]
+        except(requests.HTTPError, requests.ConnectionError, requests.ConnectTimeout) as re:
+            logging.error("Exception: exception getting stockdata from url caused by %s" % re)
+            raise
         
     def getTechInd(self, indType, interval, timePeriod = 10, seriesType = "open"):
         """
