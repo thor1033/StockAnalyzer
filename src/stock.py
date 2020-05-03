@@ -3,6 +3,7 @@ import requests
 import mplfinance as mpf
 import numpy as np
 import datetime
+import logging
 
 class Stock:
     
@@ -25,6 +26,28 @@ class Stock:
         self.volumes = data.iloc[4].values
         self.dates = data.axes[1]
         
+    def getTechInd(self, indType, interval, timePeriod = 10, seriesType = "open"):
+        """
+        indType = [SMA, EMA, WMA, DEMA, TEMA, TRIMA, KAMA, MAMA, VWAP, T3, MACD, MACDEXT, STOCH, STOCHF, RSI, STOCHRSI,
+                   WILLR, ADX, ADXR, APO, PPO, MOM, BOP, CCI, CMO, ROC, ROCR, AROON, AROONSC, MFI, TRIX, ULTSC, DX,
+                   MINUS_DI, PLUS_DI, MINUS_DM, PLUS_DM, BBANDS, MIDPOINT, MIDPRICE, SAR, TRANGE, ATR, NATR, AD, ADOSC,
+                   OBV, HT_TRENDLINE, HT_SINE, HT_DCPERIOD, HT_DCPHASE, HT_PHASOR]
+        interval = [1min, 5min, 15,min, 30min, 60min, daily, weekly, monthly]
+        timePeriod = number of datapoints used to calculate each moving average value
+        seriesType = [close, open, high, low]
+        """
+        api_call = "https://www.alphavantage.co/query?function=" + indType + "&symbol=" + self.ticker + "&interval=" + interval + "&time_period=" + str(timePeriod) + "&series_type= " + seriesType + "&apikey=BXAVNFY9YVG3DJDW"
+        try:
+            r = requests.get(api_call)
+            data = pd.DataFrame.from_dict(r.json()['Technical Analysis: ' + indType])
+            self.techInd = data.iloc[0].values
+            self.techIndDates = data.axes[1]
+
+        except(requests.HTTPError, requests.ConnectionError, requests.ConnectTimeout) as re:
+            logging.error("Exception: exception getting stockdata from url caused by %s" % re)
+            raise
+
+
 
     def visualizeCandles(self):
         #https://blog.csdn.net/wuwei_201/article/details/105783640
@@ -46,8 +69,10 @@ class Stock:
 
         mpf.plot(pdata, type='candle', mav = (3,6,9), style=my_style, volume=True)
 
+
 if __name__ == '__main__':
     #https://github.com/shirosaidev/stocksight for inspirations
     stonk = Stock("MED")
-    stonk.updateStock("Daily", "full")
-    stonk.visualizeCandles()
+    #stonk.updateStock("Daily", "full")
+    stonk.getTechInd("EMA", "daily")
+    #stonk.visualizeCandles()
