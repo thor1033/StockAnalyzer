@@ -4,8 +4,10 @@ Visualiing the data(daily candles):
 
 **TODO:**
 * WRITE A CLASS FOR STOCK
-    * Add volume to chart
-    * Change output size in API for smaller intervals
+    * Add technical analysis (head and shoulders, cup and handle etc..)
+    * Add technical indicators
+    * Sentiment analysis from tweets with text processing using http://text-processing.com/docs/ - https://en.wikipedia.org/wiki/Sentiment_analysis
+
 * CONVERT THE DATA TO FORMATS WHICH CAN BE USED BY A NN
 * WRITE A NEURAL NETWORK FOR ANALYSING THE DATA
 
