@@ -23,11 +23,6 @@ class Stock:
             respond = requests.get(api_call)
             data = pd.DataFrame.from_dict(respond.json()['Time Series ('+CandleTypes+')'])
 
-            startDate = date(2000, 5, 1)
-            endDate = date(2000, 5, 12)
-            for singleDate in daterange(startDate, endDate):
-                data.drop(singleDate.strftime("%Y-%m-%d"), inplace=True, axis=1)
-
             self.opens = data.iloc[0].values
             self.highs = data.iloc[1].values
             self.lows = data.iloc[2].values
@@ -61,17 +56,20 @@ class Stock:
 
 
 
-    def visualizeCandles(self):
+    def visualizeCandles(self, length):
         #https://blog.csdn.net/wuwei_201/article/details/105783640
         #https://blog.csdn.net/wuwei_201/article/details/105815728?utm_medium=distribute.pc_relevant_right.none-task-blog-BlogCommendFromBaidu-1&depth_1-utm_source=distribute.pc_relevant_right.none-task-blog-BlogCommendFromBaidu-1
+        
+        #diff = abs(len(self.techInd) - len(self.dates))
+
         reformatted_data = dict()
-        reformatted_data['Date'] = list(reversed(self.dates))
-        reformatted_data['Open'] = list(reversed([float(i) for i in self.opens]))
-        reformatted_data['High'] = list(reversed([float(i) for i in self.highs]))
-        reformatted_data['Low'] = list(reversed([float(i) for i in self.lows]))
-        reformatted_data['Close'] = list(reversed([float(i) for i in self.closes]))
-        reformatted_data['Volume'] = list(reversed([float(i) for i in self.volumes]))
-        reformatted_data['Tech'] = list(reversed([float(i) for i in self.techInd]))
+        reformatted_data['Date'] = list(reversed(self.dates))[len(self.dates)-length:]
+        reformatted_data['Open'] = list(reversed([float(i) for i in self.opens]))[len(self.dates)-length:]
+        reformatted_data['High'] = list(reversed([float(i) for i in self.highs]))[len(self.dates)-length:]
+        reformatted_data['Low'] = list(reversed([float(i) for i in self.lows]))[len(self.dates)-length:]
+        reformatted_data['Close'] = list(reversed([float(i) for i in self.closes]))[len(self.dates)-length:]
+        reformatted_data['Volume'] = list(reversed([float(i) for i in self.volumes]))[len(self.dates)-length:]
+        reformatted_data['Tech'] = list(reversed([float(i) for i in self.techInd]))[len(self.dates)-length-(abs(len(self.techInd) - len(self.dates))):]
 
         pdata = pd.DataFrame.from_dict(reformatted_data)
         pdata.set_index('Date', inplace=True)
@@ -107,7 +105,7 @@ def daterange(startDate, endDate):
 
 if __name__ == '__main__':
     #https://github.com/shirosaidev/stocksight for inspirations
-    stonk = Stock("MED")
+    stonk = Stock("IBM")
     stonk.updateStock("Daily", "full")
-    stonk.getTechInd("EMA", "daily")  
-    stonk.visualizeCandles()
+    stonk.getTechInd("WMA", "daily")  
+    stonk.visualizeCandles(100)
