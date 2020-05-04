@@ -42,6 +42,8 @@ class Stock:
         interval = [1min, 5min, 15,min, 30min, 60min, daily, weekly, monthly]
         timePeriod = number of datapoints used to calculate each moving average value
         seriesType = [close, open, high, low]
+
+        WARNING: Can only use Technical indicators with one value per date
         """
         api_call = "https://www.alphavantage.co/query?function=" + indType + "&symbol=" + self.ticker + "&interval=" + interval + "&time_period=" + str(timePeriod) + "&series_type= " + seriesType + "&apikey=BXAVNFY9YVG3DJDW"
         try:
@@ -59,8 +61,6 @@ class Stock:
     def visualizeCandles(self, length):
         #https://blog.csdn.net/wuwei_201/article/details/105783640
         #https://blog.csdn.net/wuwei_201/article/details/105815728?utm_medium=distribute.pc_relevant_right.none-task-blog-BlogCommendFromBaidu-1&depth_1-utm_source=distribute.pc_relevant_right.none-task-blog-BlogCommendFromBaidu-1
-        
-        #diff = abs(len(self.techInd) - len(self.dates))
 
         reformatted_data = dict()
         reformatted_data['Date'] = list(reversed(self.dates))[len(self.dates)-length:]
@@ -75,7 +75,7 @@ class Stock:
         pdata.set_index('Date', inplace=True)
         pdata.index = pd.to_datetime(pdata.index)
         
-        my_color = mpf.make_marketcolors(up='cyan', down='red', edge='black', wick='black', volume='blue')
+        my_color = mpf.make_marketcolors(up='green', down='red', edge='black', wick='black', volume='blue')
         my_style = mpf.make_mpf_style(marketcolors=my_color, gridaxis='both', gridstyle='-.', y_on_right=True)
 
         add_plot = mpf.make_addplot(reformatted_data['Tech'])
@@ -105,7 +105,7 @@ def daterange(startDate, endDate):
 
 if __name__ == '__main__':
     #https://github.com/shirosaidev/stocksight for inspirations
-    stonk = Stock("IBM")
+    stonk = Stock("MED")
     stonk.updateStock("Daily", "full")
     stonk.getTechInd("WMA", "daily")  
     stonk.visualizeCandles(100)
