@@ -11,11 +11,11 @@ class RNN:
         d = []
         for x in range(len(stock.volumes)):
             p = []
-            p.append(stock.opens[x])
-            p.append(stock.closes[x])
-            p.append(stock.highs[x])
-            p.append(stock.lows[x])
-            p.append(stock.volumes[x])
+            p.append(float(stock.opens[x]))
+            p.append(float(stock.closes[x]))
+            p.append(float(stock.highs[x]))
+            p.append(float(stock.lows[x]))
+            p.append(float(stock.volumes[x]))
             d.append(p)
         self.stockData = pd.DataFrame(data=d,
                                       index = stock.dates,
@@ -27,8 +27,6 @@ class RNN:
         print("dd")
 
     def normalize(self):
-        #stacked_df = self.stockData.stack()
-        #print(stacked_df)
-        #dates = self.stockData.drop(columns = ["Dates"])
-        print(self.stockData)
+        df = (self.stockData - self.stockData.min()) / self.stockData.max()
+        return df
     
