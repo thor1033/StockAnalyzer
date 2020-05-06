@@ -5,6 +5,7 @@ import numpy as np
 import datetime
 import logging
 from datetime import date, timedelta
+from RNN import RNN
 
 
 class Stock:
@@ -22,7 +23,7 @@ class Stock:
         try:
             respond = requests.get(api_call)
             data = pd.DataFrame.from_dict(respond.json()['Time Series ('+CandleTypes+')'])
-
+            self.data = data
             self.opens = data.iloc[0].values
             self.highs = data.iloc[1].values
             self.lows = data.iloc[2].values
@@ -108,4 +109,8 @@ if __name__ == '__main__':
     stonk = Stock("MED")
     stonk.updateStock("Daily", "full")
     stonk.getTechInd("WMA", "daily")  
-    stonk.visualizeCandles(100)
+    #stonk.visualizeCandles(10)
+
+    net = RNN(stonk)
+    net.normalize()
+    net.train()
