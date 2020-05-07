@@ -14,4 +14,4 @@ Visualing the data(daily candles):
 * WRITE A NEURAL NETWORK FOR ANALYSING THE DATA
 * Determine technical analysis to be trained with the network
 
- **Alpha Vantage API key: BXAVNFY9YVG3DJDW**d
+ **Alpha Vantage API key: BXAVNFY9YVG3DJDW**

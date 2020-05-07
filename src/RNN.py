@@ -1,6 +1,8 @@
 import keras
 import tensorflow as tf
 import pandas as pd
+import numpy as np
+import random
 
 class RNN:
     """
@@ -24,9 +26,28 @@ class RNN:
 
 
     def train(self):
-        print("dd")
+        random.seed(42)
+
+        self.stockData['H-L'] = self.stockData['High'] - self.stockData['Low']
+        self.stockData['C-O'] = self.stockData['Close'] - self.stockData['Open']
+        self.stockData['3day MA'] = self.stockData['Close'].shift(1).rolling(window = 3).mean()
+        self.stockData['10day MA'] = self.stockData['Close'].shift(1).rolling(window = 10).mean()
+        self.stockData['30day MA'] = self.stockData['Close'].shift(1).rolling(window = 30).mean()
+        self.stockData['Std_dev'] = self.stockData['Close'].rolling(5).std()
+
+
+        print(self.stockData.iloc[:,-1])
+
+
+        model = keras.Sequential([
+            keras.layers.Dense(4, activation="relu"),
+            keras.layers.Dense(20, activation="relu"),
+            keras.layers.Dense(1, activation="softmax")
+        ])
+        #model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"])
+        #model.fit(X,y, epochs=5)
 
     def normalize(self):
         df = (self.stockData - self.stockData.min()) / self.stockData.max()
-        return df
+        self.stockData = df
     
