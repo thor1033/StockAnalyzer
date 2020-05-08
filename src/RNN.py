@@ -10,19 +10,20 @@ class RNN:
     https://towardsdatascience.com/stock-prediction-using-recurrent-neural-networks-c03637437578
     """
     def __init__(self, stock):
-        d = []
-        for x in range(len(stock.volumes)):
-            p = []
-            p.append(float(stock.opens[x]))
-            p.append(float(stock.closes[x]))
-            p.append(float(stock.highs[x]))
-            p.append(float(stock.lows[x]))
-            p.append(float(stock.volumes[x]))
-            d.append(p)
-        self.stockData = pd.DataFrame(data=d,
-                                      index = stock.dates,
-                                      columns = ["Open", "Close", "High", "Low", "Volume"])
-        #print(self.stockData)
+        # d = []
+        # for x in range(len(stock.volumes)):
+        #     p = []
+        #     p.append(float(stock.opens[x]))
+        #     p.append(float(stock.closes[x]))
+        #     p.append(float(stock.highs[x]))
+        #     p.append(float(stock.lows[x]))
+        #     p.append(float(stock.volumes[x]))
+        #     d.append(p)
+        # self.stockData = pd.DataFrame(data=d,
+        #                               index = stock.dates,
+        #                               columns = ["Open", "Close", "High", "Low", "Volume"])
+        # #print(self.stockData)
+        self.stockData = stock.data.iloc[::-1]
 
 
     def train(self):
@@ -36,14 +37,14 @@ class RNN:
         self.stockData['Std_dev'] = self.stockData['Close'].rolling(5).std()
 
 
-        print(self.stockData.iloc[:,-1])
+        print(self.stockData)
 
 
-        model = keras.Sequential([
-            keras.layers.Dense(4, activation="relu"),
-            keras.layers.Dense(20, activation="relu"),
-            keras.layers.Dense(1, activation="softmax")
-        ])
+        # model = keras.Sequential([
+        #     keras.layers.Dense(4, activation="relu"),
+        #     keras.layers.Dense(20, activation="relu"),
+        #     keras.layers.Dense(1, activation="softmax")
+        # ])
         #model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"])
         #model.fit(X,y, epochs=5)
 

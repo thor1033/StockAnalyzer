@@ -4,6 +4,7 @@ Visualing the data(daily candles):
 
 **TODO:**
 * WRITE A CLASS FOR STOCK
+    * Skal fixe Visualize Data med et nye format
     * Add technical analysis (head and shoulders, cup and handle etc..)
     * Make sure you get the same length with all the technical indicators
     * More Dynamic with all the types of technical indicators
