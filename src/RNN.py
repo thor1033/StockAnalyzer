@@ -36,9 +36,11 @@ class RNN:
         self.stockData['30day MA'] = self.stockData['Close'].shift(1).rolling(window = 30).mean()
         self.stockData['Std_dev'] = self.stockData['Close'].rolling(5).std()
 
+        self.stockData['Price_Rise'] = np.where(self.stockData['Close'].shift(-1) > \
+                                                self.stockData['Close'], 1, 0)
+        #Price_Rise is 1 is our output value, storing 1 when the closing price of tomorrow is greater than the closing price today
 
         print(self.stockData)
-
 
         # model = keras.Sequential([
         #     keras.layers.Dense(4, activation="relu"),
