@@ -118,7 +118,8 @@ if __name__ == '__main__':
     #https://github.com/shirosaidev/stocksight for inspirations
     stonk = Stock("MED")
     stonk.updateStock("Daily", "full")
-    stonk.addTechInd("RSI", "daily")  
+    stonk.addTechInd("RSI", "daily")
+    stonk.addTechInd("WILLR", "daily")    
     #stonk.visualizeCandles(10)
 
     net = RNN(stonk)
