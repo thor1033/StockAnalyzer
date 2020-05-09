@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 import random
 from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
 
 class RNN:
     """
@@ -67,14 +68,29 @@ class RNN:
         classifier.fit(X_train, y_train, batch_size=10, epochs=100)
 
         result = classifier.evaluate(X_test, y_test)
-        print(result)
-        # model = keras.Sequential([
-        #     keras.layers.Dense(4, activation="relu"),
-        #     keras.layers.Dense(20, activation="relu"),
-        #     keras.layers.Dense(1, activation="softmax")
-        # ])
-        #model.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=["accuracy"])
-        #model.fit(X,y, epochs=5)
+        
+        y_pred = classifier.predict(X_test)
+        y_pred = (y_pred > 0.5)
+
+        self.stockData['y_pred'] = np.NaN
+        self.stockData.iloc[(len(self.stockData)- len(y_pred)):, -1:] = y_pred
+        trade_dataset = self.stockData.dropna()
+
+        trade_dataset['Tomorrows Returns'] = 0.
+        trade_dataset['Tomorrows Returns'] = np.log(trade_dataset['Close']/trade_dataset['Close'].shift(1))
+        trade_dataset['Tomorrows Returns'] = trade_dataset['Tomorrows Returns'].shift(-1)
+
+        trade_dataset['Strategy Returns'] = 0.
+        trade_dataset['Strategy Returns'] = np.where(trade_dataset['y_pred'] == True, trade_dataset['Tomorrows Returns'], -trade_dataset['Tomorrows Returns'])
+        
+        trade_dataset['Cumulative Market Returns'] = np.cumsum(trade_dataset['Tomorrows Returns'])
+        trade_dataset['Cumulative Strategy Returns'] = np.cumsum(trade_dataset['Strategy Returns'])
+
+        plt.figure(figsize=(10,5))
+        plt.plot(trade_dataset["Cumulative Market Returns"], color='r', label="Market Returns")
+        plt.plot(trade_dataset["Cumulative Strategy Returns"], color='g', label="Strategy Returns")
+        plt.legend()
+        plt.show()
 
     def normalize(self):
         df = (self.stockData - self.stockData.min()) / self.stockData.max()
