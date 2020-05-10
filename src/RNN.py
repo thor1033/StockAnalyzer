@@ -14,19 +14,6 @@ class RNN:
     https://towardsdatascience.com/stock-prediction-using-recurrent-neural-networks-c03637437578
     """
     def __init__(self, stock):
-        # d = []
-        # for x in range(len(stock.volumes)):
-        #     p = []
-        #     p.append(float(stock.opens[x]))
-        #     p.append(float(stock.closes[x]))
-        #     p.append(float(stock.highs[x]))
-        #     p.append(float(stock.lows[x]))
-        #     p.append(float(stock.volumes[x]))
-        #     d.append(p)
-        # self.stockData = pd.DataFrame(data=d,
-        #                               index = stock.dates,
-        #                               columns = ["Open", "Close", "High", "Low", "Volume"])
-        # #print(self.stockData)
         self.stockData = stock.data.iloc[::-1]
 
 
