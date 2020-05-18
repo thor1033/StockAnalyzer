@@ -121,7 +121,7 @@ if __name__ == '__main__':
     stonk.addTechInd("RSI", "daily")
     stonk.addTechInd("WILLR", "daily")    
     #stonk.visualizeCandles(10)
-
+    print("Hello")
     net = RNN(stonk)
     #net.normalize()
     net.train()
